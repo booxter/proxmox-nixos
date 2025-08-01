@@ -3,7 +3,7 @@
   rustPlatform,
   fetchgit,
   perl538,
-  libxcrypt,
+  libxcrypt-legacy,
 }:
 
 rustPlatform.buildRustPackage rec {
@@ -27,7 +27,7 @@ rustPlatform.buildRustPackage rec {
   '';
 
   nativeBuildInputs = [ perl538 ];
-  buildInputs = [ libxcrypt ];
+  buildInputs = [ libxcrypt-legacy ];
 
   postInstall = ''
     mkdir $out/lib/perlmod

@@ -14,7 +14,7 @@
   gzip,
   libfaketime,
   libqb,
-  libxcrypt,
+  libxcrypt-legacy,
   makeWrapper,
   openssh,
   openssl,
@@ -70,7 +70,7 @@ perl538.pkgs.toPerlModule (
       fuse
       glib
       libqb
-      libxcrypt
+      libxcrypt-legacy
       makeWrapper
       pkg-config
       rrdtool

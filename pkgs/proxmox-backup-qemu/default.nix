@@ -7,7 +7,7 @@
   sg3_utils,
   libclang,
   openssl,
-  libxcrypt,
+  libxcrypt-legacy,
   acl,
   linux-pam,
   libuuid,
@@ -55,7 +55,7 @@ rustPlatform.buildRustPackage rec {
     sg3_utils
     openssl
     sg3_utils
-    libxcrypt
+    libxcrypt-legacy
     acl
     linux-pam
     git
@@ -63,7 +63,7 @@ rustPlatform.buildRustPackage rec {
 
   buildInputs = [
     acl
-    libxcrypt
+    libxcrypt-legacy
     libuuid
     zstd
     clang
