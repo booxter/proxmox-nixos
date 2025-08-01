@@ -91,6 +91,9 @@ perl538.pkgs.toPerlModule (
       (replaceVars ./0003-pci-id-path.patch {
         pciutils = "${pciutils}";
       })
+
+      # libxcrypt doesn't support sha256 since it's not considered "strong"
+      ./0003-Use-sha512-by-default.patch
     ];
 
     propagatedBuildInputs = [

@@ -1,0 +1,31 @@
+From 86294cb4e5a1f0d008084f3c29bdade6f8d2fe32 Mon Sep 17 00:00:00 2001
+From: Ihar Hrachyshka <ihrachyshka@nvidia.com>
+Date: Fri, 1 Aug 2025 18:14:58 -0400
+Subject: [PATCH] Use sha512 by default
+
+---
+ PVE/Tools.pm | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/PVE/Tools.pm b/PVE/Tools.pm
+index fe9616e..0e05b1b 100644
+--- a/PVE/Tools.pm
++++ b/PVE/Tools.pm
+@@ -1843,10 +1843,12 @@ sub encrypt_pw {
+     # crypt does not want '+' in salt (see 'man crypt')
+     $salt =~ s/\+/X/g;
+ 
+-    $prefix = '5' if !$prefix;
++    $prefix = '6' if !$prefix;
+ 
+     my $input;
+-    if ($prefix eq '5') {
++    if ($prefix eq '6') {
++        $input = "\$6\$$salt\$";
++    } elsif ($prefix eq '5') {
+         $input = "\$5\$$salt\$";
+     } elsif ($prefix eq 'y') {
+         $input = "\$y\$j9T\$$salt\$";
+-- 
+2.50.1
+
