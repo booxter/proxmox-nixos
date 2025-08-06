@@ -38,7 +38,15 @@
           let
             pkgs = import nixpkgs-stable {
               inherit system;
-              overlays = [ self.overlays.${system} ];
+              overlays = [
+                self.overlays.${system}
+
+                (_: prev: {
+                  perl538 = prev.perl538.override {
+                    libxcrypt = prev.libxcrypt-legacy;
+                  };
+                })
+              ];
             };
             pkgs-unstable = import nixpkgs-unstable {
               inherit system;
