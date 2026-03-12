@@ -2,6 +2,7 @@
   lib,
   stdenv,
   fetchgit,
+  fetchurl,
   bash,
   coreutils,
   diffutils,
@@ -21,11 +22,19 @@
 }:
 
 let
+  cryptOpenSSLRSA = perl540.pkgs.CryptOpenSSLRSA.overrideAttrs (_old: {
+    version = "0.33";
+    src = fetchurl {
+      url = "mirror://cpan/authors/id/T/TO/TODDR/Crypt-OpenSSL-RSA-0.33.tar.gz";
+      hash = "sha256-xpsIlwnB+UE/s9MmzpdVdK0JXEQG8HnfqlYjGurpjXA=";
+    };
+  });
+
   perlDeps = with perl540.pkgs; [
     AnyEvent
     Carp
     Clone
-    CryptOpenSSLRSA
+    cryptOpenSSLRSA
     CryptOpenSSLRandom
     PathTools
     DataDumper
