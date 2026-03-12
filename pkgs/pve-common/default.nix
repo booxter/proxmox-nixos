@@ -26,7 +26,7 @@ let
     version = "0.33";
     src = fetchurl {
       url = "mirror://cpan/authors/id/T/TO/TODDR/Crypt-OpenSSL-RSA-0.33.tar.gz";
-      hash = "sha256-xpsIlwnB+UE/s9MmzpdVdK0JXEQG8HnfqlYjGurpjXA=";
+      hash = "sha256-vb5jD21vVAMldGrZmXcnKshmT/gb0Z8K2rptb0Xv2GQ=";
     };
   });
 
