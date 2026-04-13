@@ -101,9 +101,10 @@ perl540.pkgs.toPerlModule (
 
     dontBuild = true;
 
-    # Create missing SERVICEDIR
+    # Create missing dirs
     preInstall = ''
       mkdir -p $out/lib/systemd/system
+      mkdir -p $out/share/dbus-1/system.d
     '';
 
     installPhase = ''
@@ -121,6 +122,9 @@ perl540.pkgs.toPerlModule (
     '';
 
     postFixup = ''
+      mv "$out"/usr/lib/systemd/system/* "$out/lib/systemd/system/"
+      mv "$out"/usr/share/dbus-1/system.d/* "$out/share/dbus-1/system.d/"
+
       find $out/lib $out/libexec -type f | xargs sed -i \
         -e "/ENV{'PATH'}/d" \
         -e "s|/usr/lib/qemu-server|$out/lib/qemu-server|" \
@@ -145,6 +149,9 @@ perl540.pkgs.toPerlModule (
         #-e "s|/usr/bin/termproxy||" \
         #-e "s|/usr/bin/vma||" \
         #-e "s|/usr/bin/pbs-restore||" \
+
+      find $out/lib/systemd/system -type f | xargs sed -i \
+        -e "s|/usr/libexec/qemu-server|$out/libexec/qemu-server|"
 
       patchShebangs $out/lib/
       patchShebangs $out/libexec/
