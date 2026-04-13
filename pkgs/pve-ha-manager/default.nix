@@ -15,14 +15,16 @@
 }:
 
 let
+  pve-storage_ = pve-storage.override { inherit enableLinstor; };
   perlDeps = [
     pve-container
     pve-firewall
     pve-guest-common
-    pve-qemu-server
-    (pve-storage.override { inherit enableLinstor; })
+    (pve-qemu-server.override { pve-storage = pve-storage_; })
+    pve-storage_
   ];
   perlEnv = perl540.withPackages (_: perlDeps);
+  perlLibPath = lib.makeSearchPath "${perl540.libPrefix}/${perl540.version}" perlDeps;
 in
 
 perl540.pkgs.toPerlModule (
@@ -72,7 +74,7 @@ perl540.pkgs.toPerlModule (
       for bin in $out/bin/*; do
         wrapProgram $bin \
           --prefix PATH : ${lib.makeBinPath [ pve-qemu ]} \
-          --prefix PERL5LIB : $out/${perl540.libPrefix}/${perl540.version}
+          --prefix PERL5LIB : $out/${perl540.libPrefix}/${perl540.version}:${perlLibPath}
       done      
     '';
 
