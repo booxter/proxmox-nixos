@@ -10,9 +10,14 @@
   pcre2,
   makeWrapper,
   proxmox-backup-client,
+  pve-apiclient,
+  pve-cluster,
+  pve-common,
   pve-edk2-firmware,
   pve-firewall,
+  pve-guest-common,
   pve-qemu,
+  pve-storage,
   util-linux,
   uuid,
   findbin,
@@ -29,6 +34,7 @@
 let
   perlDeps = with perl540.pkgs; [
     CryptOpenSSLRandom
+    ClassMethodMaker
     DataDumper
     DigestSHA
     FilePath
@@ -42,7 +48,12 @@ let
     MIMEBase64
     NetSSLeay
     PathTools
+    pve-apiclient
+    pve-cluster
+    pve-common
     pve-firewall
+    pve-guest-common
+    pve-storage
     ScalarListUtils
     Socket
     Storable
@@ -157,8 +168,15 @@ perl540.pkgs.toPerlModule (
       find $out/lib/systemd/system -type f | xargs sed -i \
         -e "s|/usr/libexec/qemu-server|$out/libexec/qemu-server|"
 
+      patchShebangs $out/.bin/
       patchShebangs $out/lib/
       patchShebangs $out/libexec/
+
+      find $out/.bin $out/libexec/qemu-server -type f -executable ! -name dbus-vmstate | while read -r bin; do
+        wrapProgram "$bin" \
+          --prefix PATH : ${lib.makeBinPath [ pve-qemu ]} \
+          --prefix PERL5LIB : $out/${perl540.libPrefix}/${perl540.version}:${perlLibPath}
+      done
 
       wrapProgram $out/libexec/qemu-server/dbus-vmstate \
         --prefix PATH : ${lib.makeBinPath [
