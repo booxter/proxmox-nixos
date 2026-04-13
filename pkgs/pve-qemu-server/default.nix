@@ -8,6 +8,7 @@
   pkgconf,
   libsysprof-capture,
   pcre2,
+  makeWrapper,
   proxmox-backup-client,
   pve-edk2-firmware,
   pve-firewall,
@@ -17,6 +18,7 @@
   findbin,
   termreadline,
   socat,
+  conntrack-tools,
   vncterm,
   swtpm,
   libglvnd,
@@ -54,6 +56,7 @@ let
   ];
 
   perlEnv = perl540.withPackages (_: perlDeps);
+  perlLibPath = lib.makeSearchPath "${perl540.libPrefix}/${perl540.version}" perlDeps;
 in
 
 perl540.pkgs.toPerlModule (
@@ -92,6 +95,7 @@ perl540.pkgs.toPerlModule (
       glib
       json_c
       pkgconf
+      makeWrapper
       perlEnv
       libsysprof-capture
       pcre2
@@ -155,6 +159,13 @@ perl540.pkgs.toPerlModule (
 
       patchShebangs $out/lib/
       patchShebangs $out/libexec/
+
+      wrapProgram $out/libexec/qemu-server/dbus-vmstate \
+        --prefix PATH : ${lib.makeBinPath [
+          conntrack-tools
+          pve-qemu
+        ]} \
+        --prefix PERL5LIB : $out/${perl540.libPrefix}/${perl540.version}:${perlLibPath}
     '';
 
     passthru.updateScript = pve-update-script {
