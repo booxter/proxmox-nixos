@@ -5,7 +5,19 @@
   ...
 }:
 
+let
+  pveDbusVmstate = pkgs.runCommand "pve-dbus-vmstate" { } ''
+    mkdir -p $out/lib/systemd/system $out/share/dbus-1/system.d
+    cp ${pkgs.pve-qemu-server}/lib/systemd/system/pve-dbus-vmstate@.service \
+      $out/lib/systemd/system/
+    cp ${pkgs.pve-qemu-server}/share/dbus-1/system.d/org.qemu.VMState1.conf \
+      $out/share/dbus-1/system.d/
+  '';
+in
 lib.mkIf config.services.proxmox-ve.enable {
+  systemd.packages = [ pveDbusVmstate ];
+  services.dbus.packages = [ pveDbusVmstate ];
+
   systemd.services.qmeventd = {
     description = "PVE Qemu Event Daemon";
     unitConfig.RequiresMountsFor = [ "/var/run" ];
