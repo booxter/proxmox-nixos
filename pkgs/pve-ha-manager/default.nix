@@ -3,6 +3,7 @@
   stdenv,
   fetchgit,
   makeWrapper,
+  iproute2,
   perl540,
   pve-container,
   pve-firewall,
@@ -73,7 +74,7 @@ perl540.pkgs.toPerlModule (
     postFixup = ''
       for bin in $out/bin/*; do
         wrapProgram $bin \
-          --prefix PATH : ${lib.makeBinPath [ pve-qemu ]} \
+          --prefix PATH : ${lib.makeBinPath [ iproute2 pve-qemu ]} \
           --prefix PERL5LIB : $out/${perl540.libPrefix}/${perl540.version}:${perlLibPath}
       done      
     '';

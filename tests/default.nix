@@ -1,10 +1,15 @@
 { pkgs, extraBaseModules }:
 
 let
+  testLib = import ./lib.nix { inherit pkgs; };
   runTest =
-    module:
+    modulePath:
+    let
+      module = import modulePath;
+      resolvedModule = if builtins.isFunction module then module testLib else module;
+    in
     pkgs.testers.runNixOSTest {
-      imports = [ module ];
+      imports = [ resolvedModule ];
       globalTimeout = 5 * 60;
       extraBaseModules = {
         imports = builtins.attrValues extraBaseModules;
@@ -18,5 +23,6 @@ in
   test-pve-cluster-api-conntrack = runTest ./cluster-api-conntrack.nix;
   test-pve-cluster-conntrack = runTest ./cluster-conntrack.nix;
   test-pve-linstor = runTest ./linstor.nix;
+  test-pve-reboot = runTest ./reboot.nix;
   test-pve-vm = runTest ./vm.nix;
 }
